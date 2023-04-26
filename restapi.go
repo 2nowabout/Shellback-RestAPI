@@ -1,41 +1,28 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-
-	_ "github.com/go-sql-driver/mysql"
+	"Shellback.nl/Restapi/controllers"
+	"github.com/gin-gonic/gin"
 )
-
-type notification struct {
-	Type     string `json:"Type"`
-	IpAdress string `json:"IP"`
-	Value    string `json:"Value"`
-}
-
-type notifications []notification
 
 func main() {
 	requestHandler()
 }
 
 func requestHandler() {
-	http.HandleFunc("/", homeHandler)
-	http.HandleFunc("/getNotifications", getNotificationsHandler)
-	log.Fatal(http.ListenAndServe(":8000", nil))
-}
+	router := gin.Default()
+	companyRepo := controllers.NewCompanyRepo()
+	notificationRepo := controllers.NewNotificationRepo()
+	typeRepo := controllers.NewTypeRepo()
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "/ hit")
-}
+	router.GET("/getNotifications/:ip", notificationRepo.GetNotifications)
+	router.GET("/getCompanys", companyRepo.GetCompanys)
+	router.GET("/getCompany/:id", companyRepo.GetCompany)
+	router.GET("/getTypes", typeRepo.GetTypes)
+	router.POST("/addNotification", notificationRepo.CreateNotification)
+	router.POST("/addCompany", companyRepo.CreateCompany)
+	router.DELETE("/deleteCompany/:id", companyRepo.DeleteCompany)
+	router.DELETE("/deleteNotifications/:ip", notificationRepo.DeleteNotifications)
 
-func getNotificationsHandler(w http.ResponseWriter, r *http.Request) {
-	allNotifications := notifications{
-		notification{Type: "testType", IpAdress: "192.168.0.1", Value: "CVE 9.0 Found"},
-		notification{Type: "testType", IpAdress: "192.168.0.2", Value: "CVE 9.0 Found"},
-	}
-	fmt.Println(w, "loading all notifications")
-	json.NewEncoder(w).Encode(allNotifications)
+	router.Run("localhost:8000")
 }
