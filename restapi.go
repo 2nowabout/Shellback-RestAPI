@@ -22,6 +22,7 @@ func requestHandler() {
 	router.GET("/getTypes", typeRepo.GetTypes)
 	router.POST("/addNotification", notificationRepo.CreateNotification)
 	router.POST("/addCompany", companyRepo.CreateCompany)
+	router.POST("/updateActive", companyRepo.UpdateLastActive)
 	router.DELETE("/deleteCompany/:id", companyRepo.DeleteCompany)
 	router.DELETE("/deleteNotifications/:ip", notificationRepo.DeleteNotifications)
 

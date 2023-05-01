@@ -72,3 +72,13 @@ func (repository *CompanyRepo) DeleteCompany(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Company deleted successfully"})
 }
+
+func (repository *CompanyRepo) UpdateLastActive(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	err := models.UpdateActive(repository.Db, id)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Active time updated succesfully"})
+}
