@@ -2,27 +2,31 @@ package database
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-const DB_USERNAME = "root"
-const DB_PASSWORD = ""
-const DB_NAME = "shellback_autopentest"
-const DB_HOST = "127.0.0.1"
-const DB_PORT = "3306"
+type DBInfo struct {
+	DB_USERNAME string
+	DB_PASSWORD string
+	DB_NAME     string
+	DB_HOST     string
+	DB_PORT     string
+}
 
 var Db *gorm.DB
 
 func InitDb() *gorm.DB {
-	Db = connectDB()
+	Db = connectDB(getValues())
 	return Db
 }
 
-func connectDB() *gorm.DB {
+func connectDB(info DBInfo) *gorm.DB {
 	var err error
-	dsn := DB_USERNAME + ":" + DB_PASSWORD + "@tcp" + "(" + DB_HOST + ":" + DB_PORT + ")/" + DB_NAME + "?" + "parseTime=true&loc=Local"
+	dsn := info.DB_USERNAME + ":" + info.DB_PASSWORD + "@tcp" + "(" + info.DB_HOST + ":" + info.DB_PORT + ")/" + info.DB_NAME + "?" + "parseTime=true&loc=Local"
 	fmt.Println("dsn : ", dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
@@ -32,4 +36,18 @@ func connectDB() *gorm.DB {
 	}
 
 	return db
+}
+
+func getValues() DBInfo {
+	dbInfo := new(DBInfo)
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Println("Error loading environment variables file")
+	}
+	dbInfo.DB_USERNAME = os.Getenv("DB_USERNAME")
+	dbInfo.DB_PASSWORD = os.Getenv("DB_PASSWORD")
+	dbInfo.DB_NAME = os.Getenv("DB_NAME")
+	dbInfo.DB_HOST = os.Getenv("DB_HOST")
+	dbInfo.DB_PORT = os.Getenv("DB_PORT")
+	return *dbInfo
 }

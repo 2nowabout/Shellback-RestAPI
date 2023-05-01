@@ -6,7 +6,8 @@ import (
 )
 
 func main() {
-	requestHandler()
+	//requestHandler()
+	getDotEnv()
 }
 
 func requestHandler() {
