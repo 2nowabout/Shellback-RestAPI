@@ -17,7 +17,7 @@ type TypeRepo struct {
 
 func NewTypeRepo() *TypeRepo {
 	db := database.InitDb()
-	db.AutoMigrate(&models.Type{})
+	db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.Type{})
 	return &TypeRepo{Db: db}
 }
 

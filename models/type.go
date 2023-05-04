@@ -5,8 +5,7 @@ import (
 )
 
 type Type struct {
-	gorm.Model
-	ID       uint   `json:"id"`
+	ID       uint   `json:"id" gorm:"primary_key"`
 	NotiType string `json:"notitype"`
 }
 
@@ -21,7 +20,7 @@ func CreateType(db *gorm.DB, Type *Type) (err error) {
 
 // get Types
 func GetTypes(db *gorm.DB, Type *[]Type) (err error) {
-	err = db.Find(Type).Error
+	err = db.Find(&Type).Error
 	if err != nil {
 		return err
 	}
@@ -30,7 +29,7 @@ func GetTypes(db *gorm.DB, Type *[]Type) (err error) {
 
 // get Type by id
 func GetType(db *gorm.DB, Type *Type, id int) (err error) {
-	err = db.Where("id = ?", id).First(Type).Error
+	err = db.Where("id = ?", id).First(&Type).Error
 	if err != nil {
 		return err
 	}

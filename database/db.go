@@ -49,5 +49,7 @@ func getValues() DBInfo {
 	dbInfo.DB_NAME = os.Getenv("DB_NAME")
 	dbInfo.DB_HOST = os.Getenv("DB_HOST")
 	dbInfo.DB_PORT = os.Getenv("DB_PORT")
+	fmt.Printf("DB INFO HERE:")
+	fmt.Printf(os.Getenv("DB_USERNAME"))
 	return *dbInfo
 }

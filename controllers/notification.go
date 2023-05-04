@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"Shellback.nl/Restapi/database"
@@ -15,7 +16,7 @@ type NotificationRepo struct {
 
 func NewNotificationRepo() *NotificationRepo {
 	db := database.InitDb()
-	db.AutoMigrate(&models.Notification{})
+	db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.Notification{})
 	return &NotificationRepo{Db: db}
 }
 
@@ -33,6 +34,7 @@ func (repository *NotificationRepo) CreateNotification(c *gin.Context) {
 
 // get Notifications
 func (repository *NotificationRepo) GetNotifications(c *gin.Context) {
+	fmt.Println("TRYING TO FIND IT")
 	IpAdress := c.Param("ip")
 	var Notification []models.Notification
 	err := models.GetNotifications(repository.Db, &Notification, IpAdress)

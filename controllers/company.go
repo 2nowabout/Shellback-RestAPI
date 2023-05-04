@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -17,7 +18,7 @@ type CompanyRepo struct {
 
 func NewCompanyRepo() *CompanyRepo {
 	db := database.InitDb()
-	db.AutoMigrate(&models.Company{})
+	db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&models.Company{})
 	return &CompanyRepo{Db: db}
 }
 
@@ -46,6 +47,7 @@ func (repository *CompanyRepo) GetCompanys(c *gin.Context) {
 
 // get Company by id
 func (repository *CompanyRepo) GetCompany(c *gin.Context) {
+	fmt.Println("TRYING TO FIND IT")
 	id, _ := strconv.Atoi(c.Param("id"))
 	var Company models.Company
 	err := models.GetCompany(repository.Db, &Company, id)
@@ -74,7 +76,8 @@ func (repository *CompanyRepo) DeleteCompany(c *gin.Context) {
 }
 
 func (repository *CompanyRepo) UpdateLastActive(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	fmt.Println("TRYING TO FIND IT")
+	id := c.Param("ip")
 	err := models.UpdateActive(repository.Db, id)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})

@@ -1,22 +1,22 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
 )
 
 type Company struct {
-	gorm.Model
-	ID          uint      `json:id`
-	CompanyName string    `json:companyname`
-	IpAdress    string    `json:ipadress`
-	StartDate   time.Time `json:startdate`
-	LastActive  time.Time `json:lastactive`
+	ID          uint      `json:"id" gorm:"primary_key"`
+	CompanyName string    `json:"companyname"`
+	IpAdress    string    `json:"ipadress" gorm:"index"`
+	StartDate   time.Time `json:"startdate"`
+	LastActive  time.Time `json:"lastactive"`
 }
 
 func CreateCompany(db *gorm.DB, Company *Company) (err error) {
-	err = db.Create(Company).Error
+	err = db.Create(&Company).Error
 	if err != nil {
 		return err
 	}
@@ -24,7 +24,7 @@ func CreateCompany(db *gorm.DB, Company *Company) (err error) {
 }
 
 func GetCompanys(db *gorm.DB, Company *[]Company) (err error) {
-	err = db.Find(Company).Error
+	err = db.Find(&Company).Error
 	if err != nil {
 		return err
 	}
@@ -32,7 +32,7 @@ func GetCompanys(db *gorm.DB, Company *[]Company) (err error) {
 }
 
 func GetCompany(db *gorm.DB, Company *Company, id int) (err error) {
-	err = db.Where("id = ?", id).First(Company).Error
+	err = db.Where("id = ?", id).First(&Company).Error
 	if err != nil {
 		return err
 	}
@@ -40,12 +40,14 @@ func GetCompany(db *gorm.DB, Company *Company, id int) (err error) {
 }
 
 func DeleteCompany(db *gorm.DB, Company *Company, id int) (err error) {
-	db.Where("id = ?", id).Delete(Company)
+	db.Where("id = ?", id).Delete(&Company)
 	return nil
 }
 
-func UpdateActive(db *gorm.DB, Company *Company, id int) (err error) {
+func UpdateActive(db *gorm.DB, ip string) (err error) {
 	currentTime := time.Now()
-	db.Where("id = ?", id).Update("LastActive", currentTime.Format("2006-01-02 3:4:5"))
+	fmt.Println(currentTime.Format("2006-01-02 15:04:05"))
+	fmt.Println(ip)
+	db.Model(Company{}).Where("ip_adress = ?", ip).Update("last_active", currentTime.Format("2006-01-02 15:04:05"))
 	return nil
 }
