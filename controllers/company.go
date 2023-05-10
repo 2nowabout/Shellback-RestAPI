@@ -32,6 +32,7 @@ func (repository *CompanyRepo) CreateCompany(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, Company)
+	return
 }
 
 // get Companys
@@ -43,6 +44,7 @@ func (repository *CompanyRepo) GetCompanys(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, Company)
+	return
 }
 
 // get Company by id
@@ -61,6 +63,7 @@ func (repository *CompanyRepo) GetCompany(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, Company)
+	return
 }
 
 // delete Company
@@ -73,6 +76,7 @@ func (repository *CompanyRepo) DeleteCompany(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Company deleted successfully"})
+	return
 }
 
 func (repository *CompanyRepo) UpdateLastActive(c *gin.Context) {
@@ -84,4 +88,5 @@ func (repository *CompanyRepo) UpdateLastActive(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Active time updated succesfully"})
+	return
 }

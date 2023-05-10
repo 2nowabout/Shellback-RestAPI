@@ -2,6 +2,7 @@ package main
 
 import (
 	"Shellback.nl/Restapi/controllers"
+	"Shellback.nl/Restapi/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,16 +15,25 @@ func requestHandler() {
 	companyRepo := controllers.NewCompanyRepo()
 	notificationRepo := controllers.NewNotificationRepo()
 	typeRepo := controllers.NewTypeRepo()
+	aliveRepo := controllers.NewAliveRepo()
+	loginRepo := controllers.NewLoginRepo()
 
-	router.GET("/getNotifications/:ip", notificationRepo.GetNotifications)
-	router.GET("/getCompanies", companyRepo.GetCompanys)
-	router.GET("/getCompany/:id", companyRepo.GetCompany)
-	router.GET("/getTypes", typeRepo.GetTypes)
-	router.POST("/addNotification", notificationRepo.CreateNotification)
-	router.POST("/addCompany", companyRepo.CreateCompany)
-	router.POST("/alive")
+	router.POST("/register", loginRepo.Register)
+	router.POST("/login", loginRepo.Login)
+
+	router.POST("/Alive", aliveRepo.UpdateAlive)
 	router.GET("/updateActive/:ip", companyRepo.UpdateLastActive)
-	router.DELETE("/deleteCompany/:id", companyRepo.DeleteCompany)
-	router.DELETE("/deleteNotifications/:ip", notificationRepo.DeleteNotifications)
+	router.POST("/addNotification", notificationRepo.CreateNotification)
+
+	secured := router.Group("").Use(middlewares.JwtAuthMiddleware())
+	secured.GET("/getNotifications/:ip", notificationRepo.GetNotifications)
+	secured.GET("/getCompanies", companyRepo.GetCompanys)
+	secured.GET("/getCompany/:id", companyRepo.GetCompany)
+	secured.GET("/getTypes", typeRepo.GetTypes)
+	secured.GET("/getAllAlive", aliveRepo.GetAlives)
+	secured.GET("/getAlive/:id", aliveRepo.GetAlive)
+	secured.POST("/addCompany", companyRepo.CreateCompany)
+	secured.DELETE("/deleteCompany/:id", companyRepo.DeleteCompany)
+	secured.DELETE("/deleteNotifications/:ip", notificationRepo.DeleteNotifications)
 	router.Run("localhost:8002")
 }

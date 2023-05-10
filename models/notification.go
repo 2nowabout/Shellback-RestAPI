@@ -17,8 +17,9 @@ type Notification struct {
 	TimeStamp time.Time `json:"timeStamp" gorm:"not null"`
 }
 
-func CreateNotification(db *gorm.DB, Notification *Notification) (err error) {
-	err = db.Create(Notification).Error
+func CreateNotification(db *gorm.DB, notification *Notification) error {
+	notification.TimeStamp = time.Now()
+	err := db.Create(notification).Error
 	if err != nil {
 		return err
 	}

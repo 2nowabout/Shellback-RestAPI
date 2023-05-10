@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -14,7 +13,13 @@ type Alive struct {
 }
 
 func CreateAlive(db *gorm.DB, Alive *Alive) (err error) {
-	err = db.Create(&Alive).Error
+	var EditAlive = Alive
+	currentTime := time.Now()
+	EditAlive.LastOnlinePing, err = time.Parse("2006-01-02 15:04:05", currentTime.GoString())
+	if err != nil {
+		return err
+	}
+	err = db.Create(&EditAlive).Error
 	if err != nil {
 		return err
 	}
@@ -39,8 +44,11 @@ func GetAlive(db *gorm.DB, Alive *Alive, id int) (err error) {
 
 func UpdateLastOnline(db *gorm.DB, ip string) (err error) {
 	currentTime := time.Now()
-	fmt.Println(currentTime.Format("2006-01-02 15:04:05"))
-	fmt.Println(ip)
 	db.Model(Alive{}).Where("ip_adress = ?", ip).Update("last_active", currentTime.Format("2006-01-02 15:04:05"))
+	return nil
+}
+
+func DeleteAlive(db *gorm.DB, Alive *Alive, id int) (err error) {
+	db.Where("id = ?", id).Delete(&Alive)
 	return nil
 }

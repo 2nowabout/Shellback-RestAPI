@@ -23,7 +23,10 @@ func NewNotificationRepo() *NotificationRepo {
 // create Notification
 func (repository *NotificationRepo) CreateNotification(c *gin.Context) {
 	var Notification models.Notification
-	c.BindJSON(&Notification)
+	err1 := c.BindJSON(&Notification)
+	if err1 != nil {
+		fmt.Println(err1)
+	}
 	err := models.CreateNotification(repository.Db, &Notification)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
