@@ -3,6 +3,7 @@ package main
 import (
 	"Shellback.nl/Restapi/controllers"
 	"Shellback.nl/Restapi/middlewares"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,6 +13,7 @@ func main() {
 
 func requestHandler() {
 	router := gin.Default()
+	router.Use(cors.Default())
 	companyRepo := controllers.NewCompanyRepo()
 	notificationRepo := controllers.NewNotificationRepo()
 	typeRepo := controllers.NewTypeRepo()
