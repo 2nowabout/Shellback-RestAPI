@@ -31,7 +31,6 @@ func (repository *AliveRepo) CreateAlive(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, Alive)
-	return
 }
 
 // get Alives
@@ -43,7 +42,6 @@ func (repository *AliveRepo) GetAlives(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, Alive)
-	return
 }
 
 // get Alive by id
@@ -61,7 +59,6 @@ func (repository *AliveRepo) GetAlive(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, Alive)
-	return
 }
 
 // delete Alive
@@ -74,7 +71,6 @@ func (repository *AliveRepo) DeleteAlive(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Alive deleted successfully"})
-	return
 }
 
 func (repository *AliveRepo) UpdateAlive(c *gin.Context) {

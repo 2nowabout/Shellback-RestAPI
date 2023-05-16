@@ -13,7 +13,11 @@ func main() {
 
 func requestHandler() {
 	router := gin.Default()
-	router.Use(cors.Default())
+	config := cors.DefaultConfig()
+	config.AllowMethods = []string{"GET", "POST", "DELETE", "OPTIONS"}
+	config.AllowHeaders = []string{"Content-Type", "Authorization"}
+	config.AllowAllOrigins = true
+	router.Use(cors.New(config))
 	companyRepo := controllers.NewCompanyRepo()
 	notificationRepo := controllers.NewNotificationRepo()
 	typeRepo := controllers.NewTypeRepo()
@@ -31,6 +35,7 @@ func requestHandler() {
 	secured.GET("/getNotifications/:ip", notificationRepo.GetNotifications)
 	secured.GET("/getCompanies", companyRepo.GetCompanys)
 	secured.GET("/getCompany/:id", companyRepo.GetCompany)
+	secured.GET("/getCompany/notificationAmount/:ip", notificationRepo.GetAmountNotifications)
 	secured.GET("/getTypes", typeRepo.GetTypes)
 	secured.GET("/getAllAlive", aliveRepo.GetAlives)
 	secured.GET("/getAlive/:id", aliveRepo.GetAlive)

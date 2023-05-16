@@ -37,7 +37,6 @@ func (repository *NotificationRepo) CreateNotification(c *gin.Context) {
 
 // get Notifications
 func (repository *NotificationRepo) GetNotifications(c *gin.Context) {
-	fmt.Println("TRYING TO FIND IT")
 	IpAdress := c.Param("ip")
 	var Notification []models.Notification
 	err := models.GetNotifications(repository.Db, &Notification, IpAdress)
@@ -58,4 +57,15 @@ func (repository *NotificationRepo) DeleteNotifications(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Notification deleted successfully"})
+}
+
+func (repository *NotificationRepo) GetAmountNotifications(c *gin.Context) {
+	IpAdress := c.Param("ip")
+	var Notification []models.Notification
+	err := models.GetNotifications(repository.Db, &Notification, IpAdress)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	c.JSON(http.StatusOK, len(Notification))
 }
