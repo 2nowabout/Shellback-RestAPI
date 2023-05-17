@@ -7,6 +7,7 @@ import (
 
 	"Shellback.nl/Restapi/database"
 	"Shellback.nl/Restapi/models"
+	"Shellback.nl/Restapi/token"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -78,4 +79,28 @@ func (repository *LoginRepo) GetUserByID(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, User)
+}
+
+func (repository *LoginRepo) UpdatePassword(c *gin.Context) {
+	var input models.UpdateUser
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	sucess, err := token.VerifyUsername(c, input.Username)
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	if !sucess {
+		c.AbortWithStatus(http.StatusConflict)
+		return
+	}
+	err1 := models.ChangePassword(database.Db, input.Username, input.Password, input.NewPassword)
+	if err1 != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "changing password successfull"})
 }

@@ -44,11 +44,17 @@ func GetAlive(db *gorm.DB, Alive *Alive, id int) (err error) {
 
 func UpdateLastOnline(db *gorm.DB, ip string) (err error) {
 	currentTime := time.Now()
-	db.Model(Alive{}).Where("ip_adress = ?", ip).Update("last_active", currentTime.Format("2006-01-02 15:04:05"))
+	err = db.Model(Alive{}).Where("ip_adress = ?", ip).Update("last_active", currentTime.Format("2006-01-02 15:04:05")).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func DeleteAlive(db *gorm.DB, Alive *Alive, id int) (err error) {
-	db.Where("id = ?", id).Delete(&Alive)
+	err = db.Where("id = ?", id).Delete(&Alive).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }

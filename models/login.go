@@ -15,6 +15,14 @@ type User struct {
 	Email    string `json:"email" gorm:"unique"`
 }
 
+type UpdateUser struct {
+	ID          uint   `json:"id"`
+	Username    string `json:"username"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	NewPassword string `json:"newpassword"`
+}
+
 func (user *User) HashPassword(password string) error {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	if err != nil {
@@ -37,6 +45,26 @@ func GetUserByID(db *gorm.DB, uid uint) (User, error) {
 
 	u.PrepareGive()
 	return u, nil
+}
+
+func ChangePassword(db *gorm.DB, username string, password string, newpassword string) error {
+	u := User{}
+	err := db.Model(User{}).Where("username = ?", username).Take(&u).Error
+	if err != nil {
+		return err
+	}
+	err = CheckPassword(u.Password, password)
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return err
+	}
+	if err := u.HashPassword(newpassword); err != nil {
+		return err
+	}
+	err = db.Model(User{}).Where("username = ?", username).Update("password", u.Password).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func CheckPassword(password, providedPassword string) error {

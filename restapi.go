@@ -24,7 +24,6 @@ func requestHandler() {
 	aliveRepo := controllers.NewAliveRepo()
 	loginRepo := controllers.NewLoginRepo()
 
-	router.POST("/register", loginRepo.Register)
 	router.POST("/login", loginRepo.Login)
 
 	router.POST("/Alive", aliveRepo.UpdateAlive)
@@ -32,6 +31,8 @@ func requestHandler() {
 	router.POST("/addNotification", notificationRepo.CreateNotification)
 
 	secured := router.Group("").Use(middlewares.JwtAuthMiddleware())
+	secured.POST("/register", loginRepo.Register)
+	secured.POST("/changepassword", loginRepo.UpdatePassword)
 	secured.GET("/getNotifications/:ip", notificationRepo.GetNotifications)
 	secured.GET("/getCompanies", companyRepo.GetCompanys)
 	secured.GET("/getCompany/:id", companyRepo.GetCompany)

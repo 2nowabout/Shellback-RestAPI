@@ -64,6 +64,28 @@ func ExtractToken(c *gin.Context) string {
 	return ""
 }
 
+func VerifyUsername(c *gin.Context, username string) (bool, error) {
+	err1 := godotenv.Load(".env")
+	if err1 != nil {
+		fmt.Println("Error loading environment variables file")
+	}
+	tokenString := ExtractToken(c)
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(os.Getenv("JWT_KEY")), nil
+	})
+	if err != nil {
+		return false, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok && token.Valid {
+		return claims["username"] == username, nil
+	}
+	return false, nil
+}
+
 func ExtractTokenID(c *gin.Context) (uint, error) {
 	err1 := godotenv.Load(".env")
 	if err1 != nil {
