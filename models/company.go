@@ -16,6 +16,8 @@ type Company struct {
 }
 
 func CreateCompany(db *gorm.DB, Company *Company) (err error) {
+	Company.StartDate = time.Now()
+	Company.LastActive = time.Now()
 	err = db.Create(&Company).Error
 	if err != nil {
 		return err
