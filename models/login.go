@@ -23,6 +23,8 @@ type UpdateUser struct {
 	NewPassword string `json:"newpassword"`
 }
 
+const usernameEqualsString = "username = ?"
+
 func (user *User) HashPassword(password string) error {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	if err != nil {
@@ -49,7 +51,7 @@ func GetUserByID(db *gorm.DB, uid uint) (User, error) {
 
 func ChangePassword(db *gorm.DB, username string, password string, newpassword string) error {
 	u := User{}
-	err := db.Model(User{}).Where("username = ?", username).Take(&u).Error
+	err := db.Model(User{}).Where(usernameEqualsString, username).Take(&u).Error
 	if err != nil {
 		return err
 	}
@@ -60,7 +62,7 @@ func ChangePassword(db *gorm.DB, username string, password string, newpassword s
 	if err := u.HashPassword(newpassword); err != nil {
 		return err
 	}
-	err = db.Model(User{}).Where("username = ?", username).Update("password", u.Password).Error
+	err = db.Model(User{}).Where(usernameEqualsString, username).Update("password", u.Password).Error
 	if err != nil {
 		return err
 	}
@@ -88,7 +90,7 @@ func CreateUser(db *gorm.DB, user *User) error {
 
 func AuthenticateUser(db *gorm.DB, username string, password string) (string, error) {
 	u := User{}
-	err := db.Model(User{}).Where("username = ?", username).Take(&u).Error
+	err := db.Model(User{}).Where(usernameEqualsString, username).Take(&u).Error
 	if err != nil {
 		return "", err
 	}

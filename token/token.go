@@ -12,10 +12,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const envError = "Error loading environment variables file"
+
 func GenerateToken(username string, email string) (string, error) {
 	err1 := godotenv.Load(".env")
 	if err1 != nil {
-		fmt.Println("Error loading environment variables file")
+		fmt.Println(envError)
 	}
 	token_lifespan, err := strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
 
@@ -37,7 +39,7 @@ func GenerateToken(username string, email string) (string, error) {
 func TokenValid(c *gin.Context) error {
 	err1 := godotenv.Load(".env")
 	if err1 != nil {
-		fmt.Println("Error loading environment variables file")
+		fmt.Println(envError)
 	}
 	tokenString := ExtractToken(c)
 	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -67,7 +69,7 @@ func ExtractToken(c *gin.Context) string {
 func VerifyUsername(c *gin.Context, username string) (bool, error) {
 	err1 := godotenv.Load(".env")
 	if err1 != nil {
-		fmt.Println("Error loading environment variables file")
+		fmt.Println(envError)
 	}
 	tokenString := ExtractToken(c)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -89,7 +91,7 @@ func VerifyUsername(c *gin.Context, username string) (bool, error) {
 func ExtractTokenID(c *gin.Context) (uint, error) {
 	err1 := godotenv.Load(".env")
 	if err1 != nil {
-		fmt.Println("Error loading environment variables file")
+		fmt.Println(envError)
 	}
 	tokenString := ExtractToken(c)
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
