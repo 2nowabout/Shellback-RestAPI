@@ -32,6 +32,7 @@ func RequestHandler() *gin.Engine {
 	secured.POST("/changepassword", loginRepo.UpdatePassword)
 	secured.GET("/getNotifications/:ip", notificationRepo.GetNotifications)
 
+	secured.POST("/updateCompanyName", companyRepo.UpdateCompanyName)
 	secured.GET("/getCompanies", companyRepo.GetCompanys)
 	secured.GET("/getCompany/:id", companyRepo.GetCompany)
 	secured.GET("/getCompany/notificationAmount/:ip", notificationRepo.GetAmountNotifications)

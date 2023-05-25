@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -19,6 +18,14 @@ func CreateCompany(db *gorm.DB, Company *Company) (err error) {
 	Company.StartDate = time.Now()
 	Company.LastActive = time.Now()
 	err = db.Create(&Company).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateCompanyName(db *gorm.DB, company *Company) (err error) {
+	err = db.Model(Company{}).Where("ip_adress = ?", company.IpAdress).Update("company_name", company.CompanyName).Error
 	if err != nil {
 		return err
 	}
@@ -48,8 +55,6 @@ func DeleteCompany(db *gorm.DB, Company *Company, id int) (err error) {
 
 func UpdateActive(db *gorm.DB, ip string) (err error) {
 	currentTime := time.Now()
-	fmt.Println(currentTime.Format("2006-01-02 15:04:05"))
-	fmt.Println(ip)
 	db.Model(Company{}).Where("ip_adress = ?", ip).Update("last_active", currentTime.Format("2006-01-02 15:04:05"))
 	return nil
 }

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -27,7 +26,6 @@ func CreateNotification(db *gorm.DB, notification *Notification) error {
 }
 
 func GetNotifications(db *gorm.DB, Notification *[]Notification, ipadress string) (err error) {
-	fmt.Println("TRYING TO FIND IT")
 	err = db.Find(&Notification, "ip_adress = ?", ipadress).Error
 	if err != nil {
 		return err

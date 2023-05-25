@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -55,6 +56,18 @@ func (repository *CompanyRepo) GetCompany(c *gin.Context) {
 			return
 		}
 
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+	c.JSON(http.StatusOK, Company)
+}
+
+func (repository *CompanyRepo) UpdateCompanyName(c *gin.Context) {
+	var Company models.Company
+	c.BindJSON(&Company)
+	fmt.Println(&Company)
+	err := models.UpdateCompanyName(repository.Db, &Company)
+	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
