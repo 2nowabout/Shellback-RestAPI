@@ -30,6 +30,7 @@ func RequestHandler() *gin.Engine {
 	secured := router.Group("").Use(middlewares.JwtAuthMiddleware())
 	secured.POST("/register", loginRepo.Register)
 	secured.POST("/changepassword", loginRepo.UpdatePassword)
+
 	secured.GET("/getNotifications/:ip", notificationRepo.GetNotifications)
 
 	secured.POST("/updateCompanyName", companyRepo.UpdateCompanyName)
