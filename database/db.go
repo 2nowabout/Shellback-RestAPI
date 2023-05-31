@@ -40,7 +40,7 @@ func connectDB(info DBInfo) *gorm.DB {
 
 func getValues() DBInfo {
 	dbInfo := new(DBInfo)
-	err := godotenv.Load(".env")
+	err := godotenv.Load("../.env")
 	if err != nil {
 		fmt.Println("Error loading environment variables file")
 	}

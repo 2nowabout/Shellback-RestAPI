@@ -23,7 +23,6 @@ func NewLoginRepo() *LoginRepo {
 }
 
 func (repository *LoginRepo) Login(c *gin.Context) {
-
 	var input models.User
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -43,7 +42,6 @@ func (repository *LoginRepo) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
-
 }
 
 func (repository *LoginRepo) Register(c *gin.Context) {
