@@ -6,5 +6,5 @@ import (
 
 func main() {
 	r := router.RequestHandler()
-	r.Run("localhost:8002")
+	r.Run("176.57.189.22:8002")
 }
